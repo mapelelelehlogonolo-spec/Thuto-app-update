@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard | Thuto</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<section class="app">
+  <div class="topbar">
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span></button>
+    <div class="brand">thuto<i>.</i></div>
+  </div>
+  <div class="scrim" id="scrim"></div>
+
+  <aside class="side" id="side">
+    <div class="brand">thuto<i>.</i></div>
+    <div class="acad" id="academyName">Loading...</div>
+    <nav class="nav" id="nav">
+      <a data-page="dash" class="on"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5M5.5 9.5V20a1 1 0 001 1H10v-6h4v6h3.5a1 1 0 001-1V9.5"/></svg></span>Dashboard</a>
+      <a data-page="analytics"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-6M21 20H3"/></svg></span>Analytics</a>
+      <a data-page="classes"><span class="ic"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="14" height="14" rx="3"/><path d="M22 8l-6 4 6 4z"/></svg></span>Classes</a>
+      <a data-page="library"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h14v18H6a2 2 0 01-2-2V5z"/></svg></span>Library</a>
+      <a data-page="assess"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5l4 4L7 21H3v-4z"/></svg></span>Assessments</a>
+      <a data-page="chats"><span class="ic"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H4l2-3a8 8 0 1115-5z"/></svg></span>Chats</a>
+      <a data-page="learners"><span class="ic"><svg viewBox="0 0 24 24"><path d="M22 9L12 4 2 9l10 5 10-5zM6 11.5V16c0 1.2 2.7 3 6 3s6-1.8 6-3v-4.5"/></svg></span>Learners</a>
+    </nav>
+    <div class="invite" id="inviteBox" style="display:none">
+      <b>Invite students</b>
+      <div class="code" id="inviteCode">-</div>
+      <small>Share this code so students can join</small>
+      <button class="copy" id="copyInvite">Copy code</button>
+    </div>
+    <button class="signout" id="signOutBtn">Sign out</button>
+  </aside>
+
+  <main class="work">
+    <header class="top">
+      <div>
+        <h2 id="pageTitle">Dashboard</h2>
+        <div class="subline" id="pageSub">Plan and teach your classes.</div>
+      </div>
+      <div class="avatar" id="avatarInitial">-</div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <div class="page on" id="page-dash">
+      <div class="statgrid" id="dashStats"></div>
+      <div class="card" style="margin-top:22px">
+        <div class="kicker">NEXT UP</div>
+        <h3>Upcoming &amp; live classes</h3>
+        <div id="dashClasses"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="page" id="page-analytics">
+      <div class="statgrid" id="analyticsStats"></div>
+      <div class="card" style="margin-top:22px">
+        <div class="kicker">SNAPSHOT</div>
+        <h3>Your academy at a glance</h3>
+        <p style="color:var(--sub)">These numbers update live from your real classes, learners, library and chat activity as your academy grows.</p>
+      </div>
+    </div>
+
+    <!-- CLASSES -->
+    <div class="page" id="page-classes">
+      <div class="card" id="newClassCard" style="display:none">
+        <div class="kicker">SCHEDULE</div>
+        <h3>Create a class</h3>
+        <form id="newClassForm">
+          <div class="form-grid">
+            <div class="fld"><label>Title</label><input id="ncTitle" placeholder="e.g. Differentiation"></div>
+            <div class="fld"><label>Subject</label><input id="ncSubject" placeholder="e.g. Calculus"></div>
+            <div class="fld"><label>Date &amp; time</label><input id="ncWhen" type="datetime-local"></div>
+            <div class="fld"><label>Duration (minutes)</label><input id="ncDuration" type="number" value="45" min="15" step="5"></div>
+          </div>
+          <button class="pillbtn" type="submit">Schedule class</button>
+        </form>
+      </div>
+      <div class="card">
+        <div class="kicker">YOUR ACADEMY</div>
+        <h3>Classes</h3>
+        <div id="classList"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- LIBRARY -->
+    <div class="page" id="page-library">
+      <div class="card" id="newLibCard" style="display:none">
+        <div class="kicker">UPLOAD</div>
+        <h3>Publish content</h3>
+        <form id="newLibForm">
+          <div class="form-grid">
+            <div class="fld"><label>Title</label><input id="lbTitle" placeholder="e.g. Trig revision notes"></div>
+            <div class="fld"><label>Type</label>
+              <select id="lbKind"><option>Notes</option><option>Video</option><option>Past paper</option><option>Worksheet</option></select>
+            </div>
+          </div>
+          <div class="fld"><label>Note (optional)</label><input id="lbNote" placeholder="e.g. Covers chapters 3-4"></div>
+          <button class="pillbtn" type="submit">Publish to learners</button>
+        </form>
+      </div>
+      <div class="card">
+        <div class="kicker">PUBLISHED CONTENT</div>
+        <h3>Library</h3>
+        <div id="libList"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ASSESSMENTS -->
+    <div class="page" id="page-assess">
+      <div class="card" id="newTestCard" style="display:none">
+        <div class="kicker">NEW TEST</div>
+        <h3>Create a test</h3>
+        <form id="newTestForm">
+          <div class="form-grid">
+            <div class="fld"><label>Test name</label><input id="tbName" placeholder="e.g. Calculus Test 3"></div>
+            <div class="fld"><label>Questions</label><input id="tbQ" type="number" value="5" min="1"></div>
+            <div class="fld"><label>Minutes</label><input id="tbMin" type="number" value="30" min="5" step="5"></div>
+          </div>
+          <button class="pillbtn" type="submit">Publish test</button>
+        </form>
+      </div>
+      <div class="card">
+        <div class="kicker">TESTS</div>
+        <h3>Assessments</h3>
+        <div id="testList"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- CHATS -->
+    <div class="page" id="page-chats">
+      <div class="card">
+        <div class="kicker">ACADEMY GROUP</div>
+        <h3 id="chatTitle">Class chat</h3>
+        <div class="chatbox" id="chatBox"><div class="empty">Loading...</div></div>
+        <div class="chatsend">
+          <input id="chatIn" placeholder="Message your academy" maxlength="1000">
+          <button class="pillbtn" id="chatSend">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEARNERS -->
+    <div class="page" id="page-learners">
+      <div class="card">
+        <div class="kicker">ROSTER</div>
+        <h3 id="rosterTitle">Learners</h3>
+        <div id="learnerList"><div class="empty">Loading...</div></div>
+      </div>
+      <div class="card">
+        <div class="kicker">TEACHING TEAM</div>
+        <h3>Tutors</h3>
+        <div id="tutorList"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+  </main>
+</section>
+
+<div class="toastbar" id="toastbar"></div>
+<script src="/app.js"></script>
+<script src="/dashboard.js"></script>
+</body>
+</html>

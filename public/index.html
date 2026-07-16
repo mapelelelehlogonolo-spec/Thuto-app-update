@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thuto | Learning platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<section class="login">
+  <div class="intro">
+    <div class="brand">thuto<i>.</i></div>
+    <div class="tag">LEARN WITHOUT LIMITS</div>
+    <h1>Your academy, <span>your way.</span></h1>
+    <p>Live classes with real video, group learning, study materials and progress — all in one friendly, focused space.</p>
+    <div class="chips"><span>Live classes</span><span>Real accounts</span><span>Real video</span></div>
+  </div>
+  <div class="formside">
+    <div class="form">
+      <div class="hello" id="formTitle">Welcome back</div>
+      <div class="sub" id="formSub">Sign in to your tutor or learner account.</div>
+      <div class="tabs">
+        <button class="on" id="tabIn">Sign in</button>
+        <button id="tabUp">Create account</button>
+      </div>
+
+      <div id="errorMsg" class="error-msg"></div>
+
+      <!-- Sign up only: choose role -->
+      <div class="roles" id="roleRow" style="display:none">
+        <button class="on" id="roleTutor" type="button">I'm a tutor</button>
+        <button id="roleStudent" type="button">I'm a student</button>
+      </div>
+
+      <form id="authForm">
+        <div class="fld" id="fldName" style="display:none"><label>Full name</label><input id="inName" placeholder="e.g. Dzulani Mashavhela"></div>
+        <div class="fld" id="fldAcademy" style="display:none"><label>Academy name</label><input id="inAcademy" placeholder="e.g. Elite Maths Academy"></div>
+        <div class="fld" id="fldInvite" style="display:none">
+          <label>Invite code</label>
+          <input id="inInvite" placeholder="e.g. A1B2C3D4" style="text-transform:uppercase">
+        </div>
+        <div class="fld"><label>Email address</label><input id="inEmail" type="email" placeholder="you@email.com"></div>
+        <div class="fld"><label>Password</label><input id="inPassword" type="password" placeholder="Your password"></div>
+        <button class="big" id="submitBtn" type="submit">Sign in to Thuto</button>
+      </form>
+      <div class="foot" id="switchHint">New here? <b id="toSignup">Create an account</b></div>
+    </div>
+  </div>
+</section>
+
+<div class="toastbar" id="toastbar"></div>
+<script src="/app.js"></script>
+<script src="/login.js"></script>
+</body>
+</html>
