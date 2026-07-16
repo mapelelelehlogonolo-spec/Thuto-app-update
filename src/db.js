@@ -82,4 +82,64 @@ CREATE TABLE IF NOT EXISTS chat_messages (
 );
 `);
 
+// Additive migration: give library_items file-upload columns if missing.
+// (node:sqlite has no "ADD COLUMN IF NOT EXISTS", so check the table info.)
+const libCols = db.prepare("PRAGMA table_info(library_items)").all().map((c) => c.name);
+for (const [col, type] of [
+  ['file_key', 'TEXT'],
+  ['file_name', 'TEXT'],
+  ['mime_type', 'TEXT'],
+  ['size_bytes', 'INTEGER'],
+]) {
+  if (!libCols.includes(col)) db.exec(`ALTER TABLE library_items ADD COLUMN ${col} ${type}`);
+}
+
+// Additive migration: chat attachments (documents + voice notes).
+const chatCols = db.prepare("PRAGMA table_info(chat_messages)").all().map((c) => c.name);
+for (const [col, type] of [
+  ['kind', "TEXT NOT NULL DEFAULT 'text'"],
+  ['file_key', 'TEXT'],
+  ['file_name', 'TEXT'],
+  ['mime_type', 'TEXT'],
+  ['size_bytes', 'INTEGER'],
+  ['duration_ms', 'INTEGER'],
+]) {
+  if (!chatCols.includes(col)) db.exec(`ALTER TABLE chat_messages ADD COLUMN ${col} ${type}`);
+}
+
+// Additive migration: student billing, profiles, library groups.
+const userCols = db.prepare("PRAGMA table_info(users)").all().map((c) => c.name);
+for (const [col, type] of [
+  ['monthly_fee', 'INTEGER NOT NULL DEFAULT 0'],
+  ['avatar_key', 'TEXT'],
+  ['phone', 'TEXT'],
+  ['bio', 'TEXT'],
+]) {
+  if (!userCols.includes(col)) db.exec(`ALTER TABLE users ADD COLUMN ${col} ${type}`);
+}
+
+const libCols2 = db.prepare("PRAGMA table_info(library_items)").all().map((c) => c.name);
+if (!libCols2.includes('group_name')) db.exec("ALTER TABLE library_items ADD COLUMN group_name TEXT");
+if (!libCols2.includes('deleted_at')) db.exec("ALTER TABLE library_items ADD COLUMN deleted_at TEXT");
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS payments (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  academy_id  INTEGER NOT NULL REFERENCES academies(id),
+  student_id  INTEGER NOT NULL REFERENCES users(id),
+  amount      INTEGER NOT NULL,
+  period      TEXT NOT NULL,               -- 'YYYY-MM' the payment is for
+  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS reminders (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  academy_id  INTEGER NOT NULL REFERENCES academies(id),
+  student_id  INTEGER NOT NULL REFERENCES users(id),
+  body        TEXT NOT NULL,
+  seen        INTEGER NOT NULL DEFAULT 0,
+  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+`);
+
 module.exports = db;

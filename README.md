@@ -102,3 +102,66 @@ General steps on any of these:
 Dashboard, Analytics, Classes (+ live video), Library, Assessments, Chats,
 and Learners -- all backed by the database. Responsive: sidebar on desktop,
 hamburger menu on mobile.
+
+## File sharing (Library + Chat)
+
+Tutors can attach files when publishing Library content, and anyone in the
+academy can share documents, images, videos (up to 35 MB), and record voice
+notes in Chat -- WhatsApp style. Images and videos show inline; voice notes
+play in place; documents download.
+
+Storage is automatic:
+- If the four `R2_*` variables are set (Cloudflare R2), files go there --
+  permanent, and works on hosts with no disk like Render's free plan.
+- If they're not set, files save to a local `data/uploads` folder. Great for
+  testing on your computer; on Render's free plan these reset when the app
+  sleeps, so set up R2 for anything permanent.
+
+### Setting up Cloudflare R2 (free tier: 10 GB)
+1. At dash.cloudflare.com, open **R2** and create a bucket (note its name).
+2. Create an **R2 API Token** (Account -> R2 -> Manage API Tokens) with
+   Object Read & Write. Copy the Access Key ID and Secret Access Key.
+3. Your Account ID is shown on the R2 overview page.
+4. Set `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, and
+   `R2_BUCKET` in your `.env` (local) or in Render's Environment settings.
+5. Restart / redeploy. New uploads now go to R2.
+
+## Students, fees & money (tutor)
+
+The Learners page is the tutor's console:
+- **Add** a student manually (creates their account, gives you a temporary
+  password to share) or **remove** one.
+- Set each student's **monthly fee**, **mark payments**, and **filter** the
+  roster by Paid / Unpaid.
+- **Remind** a single student or **all unpaid** at once. Reminders are in-app:
+  the student sees them in a banner when they open the app.
+- The **Money** page shows collected this month, outstanding, expected, and
+  all-time totals, plus recent payments -- all from real records.
+
+## Profiles
+
+Everyone (tutors and students) can edit their name, email, phone and bio, set
+a **profile picture**, and change their password from the Profile page.
+
+## AI lesson images
+
+With `GEMINI_API_KEY` set, tutors get a "Generate a lesson image" tool in the
+Library: type a description, and the generated image is saved into the Library
+for students. Uses Google Gemini/Imagen.
+
+## Library groups & trash
+
+Library uploads can be filed under a **group/folder** and are shown grouped.
+Tutors can **remove** items to a trash, **restore** them, or **delete
+permanently**.
+
+## AI academy report
+
+On the Analytics page, tutors get an **Academy report** powered by Google
+Gemini. It reads the real data across the academy -- students, fees collected
+and outstanding, classes run/scheduled, library content, assessments and chat
+activity -- and writes a plain-language report with an overview, money summary,
+student engagement, teaching activity, and 3-5 practical recommendations.
+
+Needs `GEMINI_API_KEY` (same key as AI images). Optional `GEMINI_TEXT_MODEL`
+overrides the text model (default gemini-2.0-flash).
