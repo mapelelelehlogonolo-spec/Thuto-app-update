@@ -34,6 +34,10 @@ if (useR2) {
     region: 'auto',
     endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
     credentials: { accessKeyId: R2_ACCESS_KEY_ID, secretAccessKey: R2_SECRET_ACCESS_KEY },
+    // Cloudflare R2 rejects the newer AWS SDK's automatic integrity checksums
+    // (shows up as a bogus "Access Denied"). Only send them when required.
+    requestChecksumCalculation: 'WHEN_REQUIRED',
+    responseChecksumValidation: 'WHEN_REQUIRED',
   });
 }
 

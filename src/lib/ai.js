@@ -6,7 +6,7 @@
 // Returns { buffer, mimeType } for a generated PNG, or throws with a clear
 // message the UI can show.
 
-const MODEL = process.env.GEMINI_IMAGE_MODEL || 'imagen-3.0-generate-002';
+const IMAGE_MODEL = process.env.GEMINI_IMAGE_MODEL || 'gemini-2.0-flash-preview-image-generation';
 
 function apiKey() {
   const k = process.env.GEMINI_API_KEY;
@@ -18,13 +18,16 @@ function apiKey() {
 
 async function generateImage(prompt) {
   if (!prompt || !prompt.trim()) throw new Error('Please type what image you want.');
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:predict?key=${apiKey()}`;
+  // Uses the Gemini image-generation model via generateContent -- this works
+  // with a normal AI Studio (aistudio.google.com/apikey) key, unlike the
+  // Imagen "predict" endpoint which needs a Vertex/paid setup.
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:generateContent?key=${apiKey()}`;
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      instances: [{ prompt: prompt.trim() }],
-      parameters: { sampleCount: 1, aspectRatio: '1:1' },
+      contents: [{ parts: [{ text: 'Generate an image: ' + prompt.trim() }] }],
+      generationConfig: { responseModalities: ['TEXT', 'IMAGE'] },
     }),
   });
   const data = await res.json().catch(() => ({}));
@@ -32,10 +35,11 @@ async function generateImage(prompt) {
     const msg = data?.error?.message || `Image generation failed (${res.status}).`;
     throw new Error(msg);
   }
-  const pred = data?.predictions?.[0];
-  const b64 = pred?.bytesBase64Encoded || pred?.image?.imageBytes;
-  if (!b64) throw new Error('The AI returned no image. Try rephrasing your prompt.');
-  return { buffer: Buffer.from(b64, 'base64'), mimeType: pred?.mimeType || 'image/png' };
+  const parts = data?.candidates?.[0]?.content?.parts || [];
+  const imgPart = parts.find((p) => p.inlineData || p.inline_data);
+  const inline = imgPart && (imgPart.inlineData || imgPart.inline_data);
+  if (!inline || !inline.data) throw new Error('The AI returned no image. Try rephrasing your prompt.');
+  return { buffer: Buffer.from(inline.data, 'base64'), mimeType: inline.mimeType || inline.mime_type || 'image/png' };
 }
 
 // Text generation (for the academy report) via Gemini.
